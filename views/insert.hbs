@@ -1,0 +1,37 @@
+<div class="buttons">
+<div class="buttons">
+  <button onclick="insert()">Insert</button>
+  <button onclick="update()">Update</button>
+  <button onclick="deleteFunc()">Delete</button>
+</div>
+</div>
+
+
+<table>
+  <thead>
+    <tr>
+      {{#each columns}}
+      <th>{{this}}</th>
+      {{/each}}
+    </tr>
+  </thead>
+  <tbody>
+    {{#each datas}}
+    <tr>
+      {{#each this}}
+      <td>{{this}}</td>
+      {{/each}}
+    </tr>
+    {{/each}}
+    <tr>
+      <form id="insertForm" method="post" action={{post}}>
+        {{#each columns}}
+          <td><input type="text" id={{this}} name="isbn" required></td>
+        {{/each}}
+        <td>
+          <button type="submit">Insert</button>
+        </td>
+      </form>
+    </tr>
+  </tbody>
+</table>
