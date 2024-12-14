@@ -61,20 +61,70 @@ export const selectSql = {
         return result;
     },
     getBookToBook: async (Title) => {
-        const sql = `select ISBN, Year, Title, Price, Category, Author.Name from Book, Author 
-                    where Author_Name = Name AND Title = '${Title}'`;
+        const sql = `SELECT 
+    b.ISBN, 
+    b.Year, 
+    b.Title, 
+    b.Price, 
+    b.Category, 
+    a.Name AS Author_Name, 
+    SUM(i.Number) AS Total_Quantity
+FROM 
+    Book b
+JOIN 
+    Author a ON b.Author_Name = a.Name
+JOIN 
+    Inventory i ON b.ISBN = i.Book_ISBN
+WHERE 
+    b.Title = '${Title}'
+GROUP BY 
+    b.ISBN, b.Year, b.Title, b.Price, b.Category, a.Name`;
         const [result] = await promisePool.query(sql);
         return result;
     },
     getBookToAuthor: async (Name) => {
-        const sql = `select ISBN, Year, Title, Price, Category, Author.Name from Book, Author 
-                    where Author_Name = Name AND Name = '${Name}'`;
+        const sql = `SELECT 
+    b.ISBN, 
+    b.Year, 
+    b.Title, 
+    b.Price, 
+    b.Category, 
+    a.Name AS Author_Name, 
+    SUM(i.Number) AS Total_Quantity
+FROM 
+    Book b
+JOIN 
+    Author a ON b.Author_Name = a.Name
+JOIN 
+    Inventory i ON b.ISBN = i.Book_ISBN
+WHERE 
+    a.Name = '${Name}'
+GROUP BY 
+    b.ISBN, b.Year, b.Title, b.Price, b.Category, a.Name`;
         const [result] = await promisePool.query(sql);
         return result;
     },
     getBookToAward: async (Name) => {
-        const sql = `select ISBN, Book.Year, Title, Price, Category, Author.Name from Book, Author, Award 
-                    where Book_ISBN = ISBN AND Book.Author_Name = Author.Name AND Award.Name = '${Name}'`;
+        const sql = `SELECT 
+    b.ISBN, 
+    b.Year, 
+    b.Title, 
+    b.Price, 
+    b.Category, 
+    a.Name AS Author_Name, 
+    SUM(i.Number) AS Total_Quantity
+FROM 
+    Book b
+JOIN 
+    Author a ON b.Author_Name = a.Name
+JOIN 
+    Award aw ON b.ISBN = aw.Book_ISBN
+JOIN 
+    Inventory i ON b.ISBN = i.Book_ISBN
+WHERE 
+    aw.Name = '${Name}'
+GROUP BY 
+    b.ISBN, b.Year, b.Title, b.Price, b.Category, a.Name`;
         const [result] = await promisePool.query(sql);
         return result;
     },

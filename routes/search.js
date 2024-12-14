@@ -63,7 +63,7 @@ router.post('/book', async (req, res) => {
     if (req.cookies.user) {
         const name = req.body.name;
         const datas = await selectSql.getBookToBook(name);
-        const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author'];
+        const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author', 'Number'];
         const post = '/search/book';
         const routes = getRoutes();
         const userName = req.cookies.user.name;
@@ -79,7 +79,7 @@ router.post('/author', async (req, res) => {
     if (req.cookies.user) {
         const name = req.body.name;
         const datas = await selectSql.getBookToAuthor(name);
-        const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author'];
+        const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author', 'Number'];
         const post = '/search/author';
         const routes = getRoutes();
         const userName = req.cookies.user.name;
@@ -95,7 +95,7 @@ router.post('/award', async (req, res) => {
     if (req.cookies.user) {
         const name = req.body.name;
         const datas = await selectSql.getBookToAward(name);
-        const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author'];
+        const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author', 'Number'];
         const post = '/search/award';
         const routes = getRoutes();
         const userName = req.cookies.user.name;
