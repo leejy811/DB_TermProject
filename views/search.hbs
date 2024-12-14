@@ -1,0 +1,47 @@
+<div class="buttons">
+<div class="buttons">
+  <button onclick="book()">Book</button>
+  <button onclick="author()">Author</button>
+  <button onclick="award()">Award</button>
+</div>
+</div>
+
+<div class="search-container">
+  <form class="search-form" method="post" action={{post}}>
+    <input class="search-input" type="text" name="name" placeholder="Enter Name" required>
+    <button class="search-button" type="submit">Search</button>
+  </form>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      {{#each columns}}
+      <th>{{this}}</th>
+      {{/each}}
+    </tr>
+  </thead>
+  <tbody>
+    {{#each datas}}
+    <tr>
+      {{#each this}}
+      <td>{{this}}</td>
+      {{/each}}
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<script>
+  function book() {
+  window.location.href = '/search/book';
+  }
+
+  function author() {
+    window.location.href = '/search/author';
+  }
+
+  function award() { 
+    window.location.href = '/search/award';
+  }
+</script>

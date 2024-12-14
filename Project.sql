@@ -31,7 +31,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `DB_Proj`.`Book` (
   `ISBN` INT NOT NULL,
-  `Year` DATETIME NOT NULL,
+  `Year` YEAR(4) NOT NULL,
   `Title` VARCHAR(45) NOT NULL,
   `Price` INT NOT NULL,
   `Category` VARCHAR(45) NOT NULL,
@@ -50,13 +50,22 @@ ENGINE = InnoDB;
 -- Table `DB_Proj`.`Award`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `DB_Proj`.`Award` (
-  `Book_ISBN` INT NOT NULL,
+  `ID` INT NOT NULL AUTO_INCREMENT,
   `Name` VARCHAR(45) NOT NULL,
-  `Year` DATETIME NOT NULL,
-  PRIMARY KEY (`Book_ISBN`),
+  `Year` YEAR(4) NOT NULL,
+  `Book_ISBN` INT NOT NULL,
+  `Author_ID` INT NOT NULL,
+  INDEX `fk_Award_Book1_idx` (`Book_ISBN` ASC) VISIBLE,
+  INDEX `fk_Award_Author1_idx` (`Author_ID` ASC) VISIBLE,
+  PRIMARY KEY (`ID`),
   CONSTRAINT `fk_Award_Book1`
     FOREIGN KEY (`Book_ISBN`)
     REFERENCES `DB_Proj`.`Book` (`ISBN`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Award_Author1`
+    FOREIGN KEY (`Author_ID`)
+    REFERENCES `DB_Proj`.`Author` (`ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -116,11 +125,11 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `DB_Proj`.`Shopping_Basket` (
   `Customer_ID` INT NOT NULL,
-  `Book_ISBN` INT NOT NULL,
   `BasketID` INT NOT NULL,
-  `OrderDate` DATETIME NULL,
+  `Book_ISBN` INT NOT NULL,
+  `OrderDate` DATE NULL,
   `Number` INT NOT NULL DEFAULT 1,
-  PRIMARY KEY (`Customer_ID`, `Book_ISBN`),
+  PRIMARY KEY (`Customer_ID`, `BasketID`),
   INDEX `fk_Customer_has_Book_Book1_idx` (`Book_ISBN` ASC) VISIBLE,
   INDEX `fk_Customer_has_Book_Customer1_idx` (`Customer_ID` ASC) VISIBLE,
   CONSTRAINT `fk_Customer_has_Book_Customer1`
@@ -143,8 +152,8 @@ CREATE TABLE IF NOT EXISTS `DB_Proj`.`Reservation` (
   `Customer_ID` INT NOT NULL,
   `Book_ISBN` INT NOT NULL,
   `RID` INT NOT NULL,
-  `OrderDate` DATETIME NULL,
-  `PickupTime` DATETIME NULL,
+  `OrderDate` DATE NULL,
+  `PickupTime` TIME NULL,
   PRIMARY KEY (`Customer_ID`, `Book_ISBN`),
   INDEX `fk_Customer_has_Book_Book2_idx` (`Book_ISBN` ASC) VISIBLE,
   INDEX `fk_Customer_has_Book_Customer2_idx` (`Customer_ID` ASC) VISIBLE,

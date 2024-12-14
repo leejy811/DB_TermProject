@@ -18,9 +18,15 @@
   <tbody>
     {{#each datas}}
     <tr>
-      <form id="updateForm" method="post" action={{post}}>
+      <form id="updateForm" method="post" action="{{../post}}">
         {{#each this}}
-          <td><input type="text" id={{this}} value={{this}} required></td>
+        <td>
+          {{#if isUpdate}}
+            <input type="text" name="{{key}}" value="{{value}}" required class="editable-field">
+          {{else}}
+            <input type="text" name="{{key}}" value="{{value}}" readonly class="readonly-field">
+          {{/if}}
+        </td>
         {{/each}}
         <td>
           <button type="submit">Update</button>

@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import expressSession from 'express-session';
 import { selectSql } from "../database/sql";
+import { updateSql } from "../database/sql";
 const router = express.Router();
 
 router.use(cookieParser());
@@ -34,104 +35,74 @@ router.get('/book', async (req, res) => {
     { 
         const datas = await selectSql.getBook();
         const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author'];
-        const post = '/update/book';
-        const routes = getRoutes();
-        const userName = req.cookies.user.name;
-        const isLoggedIn = true;
-
-        const updatedUser = { ...req.cookies.user, curPage: '/book' };
-        res.cookie('user', updatedUser, { httpOnly: true, maxAge: 3600000 });
-        res.render('update', { routes, userName, isLoggedIn, datas, columns, post });
+        const isUpdates = [false, true, true, true, true, true];
+        const page = '/book';
+        getPage(req, res, datas, columns, page, isUpdates);
     }
     else
         res.redirect('/');
 });
 
-router.get('/Author', async (req, res) => {
+router.get('/author', async (req, res) => {
     if (req.cookies.user)
     { 
         const datas = await selectSql.getAuthor();
-        const columns = ['Name', 'Address', 'URL'];
-        const post = '/update/author';
-        const routes = getRoutes();
-        const userName = req.cookies.user.name;
-        const isLoggedIn = true;
-        
-        const updatedUser = { ...req.cookies.user, curPage: '/Author' };
-        res.cookie('user', updatedUser, { httpOnly: true, maxAge: 3600000 });
-        res.render('update', { routes, userName, isLoggedIn, datas, columns, post });
+        const columns = ['ID', 'Name', 'Address', 'URL'];
+        const isUpdates = [false, true, true, true];
+        const page = '/author';
+        getPage(req, res, datas, columns, page, isUpdates);
     }
     else
         res.redirect('/');
 });
 
-router.get('/Award', async (req, res) => {
+router.get('/award', async (req, res) => {
     if (req.cookies.user)
     { 
         const datas = await selectSql.getAward();
-        const columns = ['Book', 'Name', 'Year'];
-        const post = '/update/Award';
-        const routes = getRoutes();
-        const userName = req.cookies.user.name;
-        const isLoggedIn = true;
-        
-        const updatedUser = { ...req.cookies.user, curPage: '/Award' };
-        res.cookie('user', updatedUser, { httpOnly: true, maxAge: 3600000 });
-        res.render('update', { routes, userName, isLoggedIn, datas, columns, post });
+        const columns = ['ID', 'Name', 'Year', 'Book_ISBN', 'Author_ID'];
+        const isUpdates = [false, true, true, true, true];
+        const page = '/award';
+        getPage(req, res, datas, columns, page, isUpdates);
     }
     else
         res.redirect('/');
 });
 
-router.get('/Warehouse', async (req, res) => {
+router.get('/warehouse', async (req, res) => {
     if (req.cookies.user)
     { 
         let datas = await selectSql.getWarehouse();
         const columns = ['Code', 'PhoneNum', 'Address'];
-        const post = '/update/Warehouse';
-        const routes = getRoutes();
-        const userName = req.cookies.user.name;
-        const isLoggedIn = true;
-        
-        const updatedUser = { ...req.cookies.user, curPage: '/Warehouse' };
-        res.cookie('user', updatedUser, { httpOnly: true, maxAge: 3600000 });
-        res.render('update', { routes, userName, isLoggedIn, datas, columns, post });
+        const isUpdates = [false, true, true];
+        const page = '/warehouse';
+        getPage(req, res, datas, columns, page, isUpdates);
     }
     else
         res.redirect('/');
 });
 
-router.get('/Inventory', async (req, res) => {
+router.get('/inventory', async (req, res) => {
     if (req.cookies.user)
     { 
         let datas = await selectSql.getInventory();
         const columns = ['Warehouse', 'Book', 'Number'];
-        const post = '/update/Inventory';
-        const routes = getRoutes();
-        const userName = req.cookies.user.name;
-        const isLoggedIn = true;
-        
-        const updatedUser = { ...req.cookies.user, curPage: '/Inventory' };
-        res.cookie('user', updatedUser, { httpOnly: true, maxAge: 3600000 });
-        res.render('update', { routes, userName, isLoggedIn, datas, columns, post });
+        const isUpdates = [false, false, true];
+        const page = '/inventory';
+        getPage(req, res, datas, columns, page, isUpdates);
     }
     else
         res.redirect('/');
 });
 
-router.get('/Contains', async (req, res) => {
+router.get('/contains', async (req, res) => {
     if (req.cookies.user)
     { 
         let datas = await selectSql.getContains();
-        const columns = ['Customer', 'Book', 'Number'];
-        const post = '/update/Contains';
-        const routes = getRoutes();
-        const userName = req.cookies.user.name;
-        const isLoggedIn = true;
-        
-        const updatedUser = { ...req.cookies.user, curPage: '/Contains' };
-        res.cookie('user', updatedUser, { httpOnly: true, maxAge: 3600000 });
-        res.render('update', { routes, userName, isLoggedIn, datas, columns, post });
+        const columns = ['Customer_ID', 'Book_ISBN', 'BasketID', 'OrderDate', 'Number'];
+        const isUpdates = [false, false, false, false, true];
+        const page = '/contains';
+        getPage(req, res, datas, columns, page, isUpdates);
     }
     else
         res.redirect('/');
@@ -139,7 +110,33 @@ router.get('/Contains', async (req, res) => {
 
 
 router.post('/book', async (req, res) => {
-    var body = req.body;
+    const result = await updateSql.updateBook(req.body);
+    exceptionResult(res, result, '/book');
+});
+
+router.post('/author', async (req, res) => {
+    const result = await updateSql.updateAuthor(req.body);
+    exceptionResult(res, result, '/author');
+});
+
+router.post('/award', async (req, res) => {
+    const result = await updateSql.updateAward(req.body);
+    exceptionResult(res, result, '/award');
+});
+
+router.post('/warehouse', async (req, res) => {
+    const result = await updateSql.updateWarehouse(req.body);
+    exceptionResult(res, result, '/warehouse');
+});
+
+router.post('/inventory', async (req, res) => {
+    const result = await updateSql.updateInventory(req.body);
+    exceptionResult(res, result, '/inventory');
+});
+
+router.post('/contains', async (req, res) => {
+    const result = await updateSql.updateContains(req.body);
+    exceptionResult(res, result, '/contains');
 });
 
 module.exports = router;
@@ -155,4 +152,33 @@ function getRoutes(){
     ];
 
     return routes;
+}
+
+function getPage(req, res, rawDatas, columns, page, isUpdates) {
+    const datas = rawDatas.map(rawData => {
+        return Object.entries(rawData).map(([key, value], index) => ({
+            key,
+            value,
+            isUpdate: isUpdates[index]
+        }));
+    });
+
+    const post = '/update' + page;
+    const routes = getRoutes();
+    const userName = req.cookies.user.name;
+    const isLoggedIn = true;
+
+    const updatedUser = { ...req.cookies.user, curPage: page };
+    res.cookie('user', updatedUser, { httpOnly: true, maxAge: 3600000 });
+    res.render('update', { routes, userName, isLoggedIn, datas, columns, post });
+}
+
+function exceptionResult(res, result, page) {
+    if (result === 'success')
+        res.redirect('/update' + page);
+    else
+        return res.send(`<script> 
+                alert("update failed! Error: ${result}");
+                window.location.href = '/update${page}';
+                 </script>`);
 }

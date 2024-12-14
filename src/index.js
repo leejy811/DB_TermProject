@@ -10,6 +10,8 @@ import logoutRouter from '../routes/logout';
 import insertRouter from '../routes/insert';
 import updateRouter from '../routes/update';
 import deleteRouter from '../routes/delete';
+import searchRouter from '../routes/search';
+import selectRouter from '../routes/select';
 
 const PORT = 3000;
 
@@ -37,6 +39,8 @@ app.use('/logout', logoutRouter);
 app.use('/insert', insertRouter);
 app.use('/update', updateRouter);
 app.use('/delete', deleteRouter);
+app.use('/search', searchRouter);
+app.use('/select', selectRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`)

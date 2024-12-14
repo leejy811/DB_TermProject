@@ -1,9 +1,9 @@
 <div class="buttons">
-<div class="buttons">
-  <button onclick="insert()">Insert</button>
-  <button onclick="update()">Update</button>
-  <button onclick="deleteFunc()">Delete</button>
-</div>
+  <div class="buttons">
+    <button onclick="insert()">Insert</button>
+    <button onclick="update()">Update</button>
+    <button onclick="deleteFunc()">Delete</button>
+  </div>
 </div>
 
 
@@ -11,7 +11,7 @@
   <thead>
     <tr>
       {{#each columns}}
-      <th>{{this}}</th>
+      <th>{{name}}</th>
       {{/each}}
     </tr>
   </thead>
@@ -26,7 +26,11 @@
     <tr>
       <form id="insertForm" method="post" action={{post}}>
         {{#each columns}}
-          <td><input type="text" id={{this}} name="isbn" required></td>
+          {{#if isInsert}}
+            <td><input type="text" id="{{name}}" name="{{name}}" required></td>
+          {{else}}
+            <td></td>
+         {{/if}}
         {{/each}}
         <td>
           <button type="submit">Insert</button>

@@ -1,0 +1,26 @@
+<table>
+  <thead>
+    <tr>
+      {{#each columns}}
+      <th>{{this}}</th>
+      {{/each}}
+    </tr>
+  </thead>
+  <tbody>
+    {{#each datas}}
+    <tr>
+      {{#each this}}
+      <td>{{this}}</td>
+      {{/each}}
+      {{#if this.OrderDate}} <!-- OrderDate가 NULL이 아니라면 -->
+        <td></td> <!-- 빈 셀 -->
+      {{else}} <!-- OrderDate가 NULL이라면 -->
+        <form id="deleteForm" method="post" action={{../post}}>
+          <td>
+            <button type="submit">Buy</button>
+          </td>
+        </form>
+      {{/if}}
+    </tr>
+    {{/each}}
+  </tbody>

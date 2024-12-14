@@ -1,0 +1,92 @@
+<table>
+  <thead>
+    <tr>
+      {{#each columns}}
+      <th>{{this}}</th>
+      {{/each}}
+    </tr>
+  </thead>
+  <tbody>
+    {{#each datas}}
+    <tr>
+      {{#each this}}
+      <td>{{this}}</td>
+      {{/each}}
+      <td>
+        <button class="modify-btn" data-rid="{{this.RID}}" data-orderdate="{{this.OrderDate}}"
+          data-pickuptime="{{this.PickupTime}}">{{../buttonname}}</button>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<div id="modifyModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Modify Reservation</h2>
+
+    <!-- Update Reservation Form -->
+    <form id="updateForm" method="post" action="/select/reservation/update">
+      <input type="hidden" id="modalRID" name="RID">
+      <div class="form-group">
+        <label for="modalPickupDateTime" class="form-label">Pickup Date & Time:</label>
+        <input type="datetime-local" id="modalPickupDateTime" name="pickupDateTime" class="form-input">
+      </div>
+      <button type="submit" class="update-btn">Update</button>
+    </form>
+
+    <!-- Cancel Reservation Form -->
+    <form id="cancelForm" method="post" action="/select/reservation/cancel">
+      <input type="hidden" id="cancelRID" name="RID">
+      <button type="submit" class="cancel-btn">Cancel</button>
+    </form>
+  </div>
+</div>
+
+
+
+<!-- JavaScript 코드 -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('modifyModal');
+    const closeBtn = document.querySelector('.close');
+    const modifyButtons = document.querySelectorAll('.modify-btn');
+
+    const modalRID = document.getElementById('modalRID');
+    const modalPickupDateTime = document.getElementById('modalPickupDateTime');
+    const cancelRID = document.getElementById('cancelRID');
+
+    // Modify 버튼 클릭 이벤트
+    modifyButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const rid = button.getAttribute('data-rid');
+        const pickupDateTime = button.getAttribute('data-pickuptime');
+
+        // Update와 Cancel 폼에 RID 설정
+        modalRID.value = rid;
+        cancelRID.value = rid;
+
+        // Pickup Date & Time 설정
+        if (pickupDateTime) {
+          modalPickupDateTime.value = pickupDateTime.replace(' ', 'T');
+        }
+
+        // 모달 열기
+        modal.style.display = 'block';
+      });
+    });
+
+    // 모달 닫기 버튼
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    // 모달 외부 클릭 시 닫기
+    window.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+  });
+</script>

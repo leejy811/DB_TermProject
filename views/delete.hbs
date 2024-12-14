@@ -19,9 +19,12 @@
     {{#each datas}}
     <tr>
       {{#each this}}
-      <td>{{this}}</td>
+      <td>{{value}}</td>
       {{/each}}
-      <form id="deleteForm" method="post" action={{post}}>
+      <form id="deleteForm" method="post" action={{../post}}>
+        {{#each this}}
+            <input type="hidden" name="{{key}}" value="{{value}}">
+        {{/each}}
         <td>
           <button type="submit">Delete</button>
         </td>

@@ -13,8 +13,14 @@ router.use(expressSession({
 
 router.get('/', (req, res) => {
 
-    if (req.cookies.user)
-        res.redirect('/insert');
+    if (req.cookies.user) {
+        if (req.cookies.user.Type === 'Admin')
+            res.redirect('/insert');
+        else if (req.cookies.user.Type === 'Customer')
+            res.redirect('/search');
+        else
+            res.render('login');
+    }
     else
         res.render('login');
 });
@@ -31,7 +37,7 @@ router.post('/', async (req, res) => {
     });
 
     if (userInfo.checkLogin) {
-        res.cookie('user',{
+        res.cookie('user', {
             name: userInfo.Name, // 사용자 이름
             type: userInfo.Type, // 사용자 유형
             id: userInfo.id,     // 사용자 ID
@@ -44,7 +50,7 @@ router.post('/', async (req, res) => {
         if (userInfo.Type === 'Admin')
             res.redirect('/insert');
         else if (userInfo.Type === 'Customer')
-            res.redirect('/');
+            res.redirect('/search');
     } else {
         console.log('login failed!');
         res.send(`<script>
