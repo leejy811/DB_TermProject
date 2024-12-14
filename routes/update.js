@@ -47,8 +47,8 @@ router.get('/author', async (req, res) => {
     if (req.cookies.user)
     { 
         const datas = await selectSql.getAuthor();
-        const columns = ['ID', 'Name', 'Address', 'URL'];
-        const isUpdates = [false, true, true, true];
+        const columns = ['Name', 'Address', 'URL'];
+        const isUpdates = [false, true, true];
         const page = '/author';
         getPage(req, res, datas, columns, page, isUpdates);
     }
@@ -60,8 +60,8 @@ router.get('/award', async (req, res) => {
     if (req.cookies.user)
     { 
         const datas = await selectSql.getAward();
-        const columns = ['ID', 'Name', 'Year', 'Book_ISBN', 'Author_ID'];
-        const isUpdates = [false, true, true, true, true];
+        const columns = ['Name', 'Year', 'Book_ISBN'];
+        const isUpdates = [false, false, true];
         const page = '/award';
         getPage(req, res, datas, columns, page, isUpdates);
     }
@@ -86,7 +86,7 @@ router.get('/inventory', async (req, res) => {
     if (req.cookies.user)
     { 
         let datas = await selectSql.getInventory();
-        const columns = ['Warehouse', 'Book', 'Number'];
+        const columns = ['Warehouse_Code', 'Book_ISBN', 'Number'];
         const isUpdates = [false, false, true];
         const page = '/inventory';
         getPage(req, res, datas, columns, page, isUpdates);
@@ -99,8 +99,8 @@ router.get('/contains', async (req, res) => {
     if (req.cookies.user)
     { 
         let datas = await selectSql.getContains();
-        const columns = ['Customer_ID', 'Book_ISBN', 'BasketID', 'OrderDate', 'Number'];
-        const isUpdates = [false, false, false, false, true];
+        const columns = ['BasketID', 'User_Email', 'Book_ISBN', 'Number'];
+        const isUpdates = [false, false, false, true];
         const page = '/contains';
         getPage(req, res, datas, columns, page, isUpdates);
     }

@@ -4,45 +4,117 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{title}}</title>
+  <title>Book Store</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
     }
 
     header {
-      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       padding: 20px;
-      background-color: #f4f4f4;
-      border-bottom: 1px solid #ccc;
+      background-color: #007bff;
+      color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    header div {
+      display: flex;
+      align-items: center;
+    }
+
+    header span {
+      font-size: 16px;
+      margin-right: 10px;
+      color: white;
+      font-weight: bold;
+    }
+
+    header button {
+      padding: 8px 12px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    header button:hover {
+      background-color: #cc0000;
+    }
+
+    #loginForm {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    #loginForm label {
+      margin: 5px 0;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    #loginForm input {
+      padding: 8px;
+      margin-bottom: 10px;
+      width: 200px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    #loginForm button {
+      padding: 8px 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    #loginForm button:hover {
+      background-color: #0056b3;
     }
 
     nav {
-      float: left;
-      width: 200px;
-      background: #f4f4f4;
-      padding: 20px;
+      background-color: #f8f9fa;
+      padding: 10px 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
     }
 
     nav a {
-      display: block;
-      margin: 10px 0;
-      color: #000;
+      margin-right: 15px;
       text-decoration: none;
-      border: 1px solid #007bff;
-      padding: 5px;
-      text-align: center;
+      color: #007bff;
+      font-size: 16px;
+      font-weight: bold;
+      transition: color 0.3s;
     }
 
     nav a:hover {
-      background: #007bff;
-      color: #fff;
+      color: #0056b3;
     }
 
     main {
-      margin-left: 220px;
       padding: 20px;
     }
 
@@ -50,17 +122,51 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      background-color: #f9f9f9;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
     }
 
-    table th,
-    table td {
-      border: 1px solid #007bff;
+    thead th {
+      background-color: #d4edda;
+      color: #155724;
       padding: 10px;
+      text-align: left;
+      font-size: 16px;
+      font-weight: bold;
+      border-bottom: 2px solid #c3e6cb;
+    }
+
+    tbody td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      font-size: 14px;
+      color: #333;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: #ffffff;
+    }
+
+    tbody tr:hover {
+      background-color: #e9f5e9;
+      transition: background-color 0.3s;
+    }
+
+    tbody td:last-child {
       text-align: center;
     }
 
-    table th {
-      background: #c8e6c9;
+    table,
+    th,
+    td {
+      border: 1px solid #ddd;
     }
 
     table td input {
@@ -70,66 +176,247 @@
 
     .buttons {
       display: flex;
+      justify-content: center;
+      text-align: center;
       gap: 10px;
-    }
-
-    .buttons form {
-      margin: 0;
+      margin-bottom: 20px;
+      margin-top: 10px;
     }
 
     .buttons button {
       padding: 10px 20px;
-      background-color: #007bff;
+      font-size: 14px;
+      font-weight: bold;
       color: white;
+      background-color: #007bff;
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .buttons button:hover {
       background-color: #0056b3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .buttons button:active {
+      background-color: #003f7f;
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .search-container {
       display: flex;
       justify-content: center;
-      align-items: center;
-      margin: 20px 0;
+      margin-bottom: 20px;
     }
 
     .search-form {
       display: flex;
-      align-items: center;
       gap: 10px;
+      align-items: center;
     }
 
-    .search-input {
-      width: 300px;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
+    table input {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ddd;
       border-radius: 5px;
-      transition: border-color 0.3s ease;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .search-input:focus {
+    table input:focus {
       border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
       outline: none;
     }
 
     .search-button {
       padding: 10px 20px;
-      font-size: 16px;
+      font-size: 14px;
+      font-weight: bold;
       color: white;
+      background-color: #28a745;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .search-button:hover {
+      background-color: #218838;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-button:active {
+      background-color: #1e7e34;
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 5px 10px;
+    }
+
+    .popup-close-button:hover {
+      background-color: #cc0000;
+    }
+
+    .popup-submit {
+      margin-top: 10px;
+      padding: 8px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .popup-submit:hover {
+      background-color: #0056b3;
+    }
+
+    .action-button {
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
       background-color: #007bff;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
+      margin: 5px;
     }
 
-    .search-button:hover {
+    .action-button:hover {
       background-color: #0056b3;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .reserve-button {
+      background-color: #28a745;
+    }
+
+    .reserve-button:hover {
+      background-color: #1e7e34;
+    }
+
+    .modify-btn {
+      display: inline-block;
+      padding: 10px 15px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #ffffff;
+      background-color: #28a745;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .modify-btn:hover {
+      background-color: #218838;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .modify-btn:active {
+      background-color: #1e7e34;
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #insertForm {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 20px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #insertForm input[type="text"] {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #insertForm input[type="text"]:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+      outline: none;
+    }
+
+    #insertForm button {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: bold;
+      color: white;
+      background-color: #28a745;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    #insertForm button:hover {
+      background-color: #218838;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #insertForm button:active {
+      background-color: #1e7e34;
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #insertForm td {
+      padding: 5px;
     }
 
     .modal {
@@ -140,50 +427,173 @@
       top: 0;
       width: 100%;
       height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.4);
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .modal-content {
-      background-color: #fefefe;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 50%;
+      background-color: #ffffff;
+      padding: 20px 30px;
       border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      max-width: 90%;
+      position: relative;
+    }
+
+    .modal-content h2 {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+      color: #333333;
     }
 
     .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: transparent;
+      color: #333333;
+      font-size: 18px;
       font-weight: bold;
+      border: none;
       cursor: pointer;
+      transition: color 0.3s ease;
     }
 
-    .close:hover,
-    .close:focus {
-      color: black;
-      text-decoration: none;
+    .close:hover {
+      color: #ff4d4d;
     }
 
     .form-group {
-      display: flex;
-      flex-direction: column;
       margin-bottom: 15px;
     }
 
     .form-label {
-      font-size: 16px;
+      display: block;
+      font-size: 14px;
       font-weight: bold;
+      margin-bottom: 5px;
+      color: #555555;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+      outline: none;
+    }
+
+    .update-btn,
+    .cancel-btn {
+      display: inline-block;
+      padding: 10px 15px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      margin-right: 10px;
+    }
+
+    .update-btn {
+      background-color: #007bff;
+    }
+
+    .update-btn:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+
+    .cancel-btn {
+      background-color: #dc3545;
+    }
+
+    .cancel-btn:hover {
+      background-color: #a71d2a;
+      transform: scale(1.05);
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .popup-content {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      max-width: 90%;
+      position: relative;
+      text-align: center;
+    }
+
+    .popup-content h3 {
+      font-size: 20px;
+      margin-bottom: 15px;
       color: #333;
+    }
+
+    .popup-close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #ff4d4d;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      padding: 5px 10px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .popup-close-button:hover {
+      background-color: #cc0000;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
       margin-bottom: 5px;
     }
 
     .form-input {
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ddd;
       border-radius: 5px;
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
@@ -194,66 +604,23 @@
       outline: none;
     }
 
-    .update-btn {
+    .popup-submit {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
       background-color: #007bff;
-      /* 파란색 */
-      color: white;
-      padding: 10px 20px;
-      font-size: 16px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease;
+      transition: background-color 0.3s ease, transform 0.2s;
     }
 
-    .update-btn:hover {
+    .popup-submit:hover {
       background-color: #0056b3;
-      /* 진한 파란색 */
-      transform: scale(1.05);
-      /* 약간 확대 */
-    }
-
-    .cancel-btn {
-      background-color: #dc3545;
-      /* 빨간색 */
-      color: white;
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-    .cancel-btn:hover {
-      background-color: #a71d2a;
-      /* 더 진한 빨간색 */
-      transform: scale(1.05);
-      /* 약간 확대 */
-    }
-
-    .buttons {
-      display: flex;
-      justify-content: space-between;
-      /* 버튼 간격 유지 */
-      gap: 15px;
-      /* 버튼 사이 간격 */
-    }
-
-    .editable-field {
-      background-color: white;
-      /* 일반 필드는 흰색 배경 */
-      color: black;
-      border: 1px solid #ccc;
-    }
-
-    .readonly-field {
-      background-color: #f0f0f0;
-      /* 비활성 필드는 회색 배경 */
-      color: #777;
-      /* 텍스트도 연한 색으로 설정 */
-      border: 1px solid #ddd;
-      /* 테두리도 약간 흐리게 */
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
   </style>
 </head>
@@ -269,16 +636,14 @@
       <form id="loginForm" method="post" action="/">
         <label for="id">ID</label>
         <input type="text" id="id" name="id" required placeholder="Enter your ID">
-        <br>
         <label for="password">PW</label>
         <input type="password" id="password" name="password" required placeholder="Enter your password">
-        <br>
         <button type="submit">Login</button>
       </form>
       {{/if}}
     </div>
-
   </header>
+
   <nav>
     {{#each routes}}
     <a href="{{this.path}}">{{this.label}}</a>
@@ -297,11 +662,9 @@
       window.location.href = '/insert';
     }
 
-
     function update() {
       window.location.href = '/update';
     }
-
 
     function deleteFunc() {
       window.location.href = '/delete';

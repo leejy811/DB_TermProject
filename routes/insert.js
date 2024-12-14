@@ -32,13 +32,7 @@ router.get('/', (req, res) => {
 router.get('/book', async (req, res) => {
     if (req.cookies.user) {
         const datas = await selectSql.getBook();
-        const columns = [
-            {name: 'ISBN', isInsert: false}, 
-            {name: 'Year', isInsert: true}, 
-            {name: 'Title', isInsert: true}, 
-            {name: 'Price', isInsert: true}, 
-            {name: 'Category', isInsert: true}, 
-            {name: 'Author_ID', isInsert: true}, ];
+        const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'AuthorName'];
         const page = '/book';
         getPage(req, res, datas, columns, page);
     }
@@ -49,11 +43,7 @@ router.get('/book', async (req, res) => {
 router.get('/author', async (req, res) => {
     if (req.cookies.user) {
         const datas = await selectSql.getAuthor();
-        const columns = [
-            {name: 'ID', isInsert: false}, 
-            {name: 'Name', isInsert: true}, 
-            {name: 'Address', isInsert: true}, 
-            {name: 'URL', isInsert: true}, ];
+        const columns = ['Name', 'Address', 'URL'];
         const page = '/author';
         getPage(req, res, datas, columns, page);
     }
@@ -64,12 +54,7 @@ router.get('/author', async (req, res) => {
 router.get('/award', async (req, res) => {
     if (req.cookies.user) {
         const datas = await selectSql.getAward();
-        const columns = [
-            {name: 'ID', isInsert: false}, 
-            {name: 'Name', isInsert: true}, 
-            {name: 'Year', isInsert: true}, 
-            {name: 'Book_ISBN', isInsert: true},
-            {name: 'Author_ID', isInsert: true}, ];
+        const columns = ['Name', 'Year', 'Book_ISBN'];
         const page = '/award';
         getPage(req, res, datas, columns, page);
     }
@@ -80,10 +65,7 @@ router.get('/award', async (req, res) => {
 router.get('/warehouse', async (req, res) => {
     if (req.cookies.user) {
         let datas = await selectSql.getWarehouse();
-        const columns = [
-            {name: 'Code', isInsert: true}, 
-            {name: 'PhoneNum', isInsert: true}, 
-            {name: 'Address', isInsert: true}, ];
+        const columns = ['Code', 'PhoneNum', 'Address'];
         const page = '/warehouse';
         getPage(req, res, datas, columns, page);
     }
@@ -94,10 +76,7 @@ router.get('/warehouse', async (req, res) => {
 router.get('/inventory', async (req, res) => {
     if (req.cookies.user) {
         let datas = await selectSql.getInventory();
-        const columns = [
-            {name: 'Warehouse', isInsert: true}, 
-            {name: 'Book', isInsert: true}, 
-            {name: 'Number', isInsert: true}, ];
+        const columns = ['Warehouse_Code', 'Book_ISBN', 'Number'];
         const page = '/inventory';
         getPage(req, res, datas, columns, page);
     }
@@ -108,12 +87,7 @@ router.get('/inventory', async (req, res) => {
 router.get('/contains', async (req, res) => {
     if (req.cookies.user) {
         let datas = await selectSql.getContains();
-        const columns = [
-            {name: 'Customer_ID', isInsert: true}, 
-            {name: 'Book_ISBN', isInsert: true}, 
-            {name: 'BasketID', isInsert: true},
-            {name: 'OrderDate', isInsert: false},
-            {name: 'Number', isInsert: true}, ];
+        const columns = ['BasketID', 'User_Email', 'Book_ISBN', 'Number'];
         const page = '/contains';
         getPage(req, res, datas, columns, page);
     }

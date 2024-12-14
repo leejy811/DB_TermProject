@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
 
     users.map((user) => {
         if (vars.id === user.Email && parseInt(vars.password) === user.Password) {
-            userInfo = { Name: user.Name, Type: user.Type, id: user.ID, checkLogin: true };
+            userInfo = { Name: user.Name, Type: user.Type, id: user.Email, checkLogin: true };
         }
     });
 
@@ -56,8 +56,7 @@ router.post('/', async (req, res) => {
         res.send(`<script>
                     alert('login failed!');
                     location.href='/';
-                </script>`)
-        res.redirect('/');
+                </script>`);
     }
 });
 

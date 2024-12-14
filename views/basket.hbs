@@ -12,12 +12,16 @@
       {{#each this}}
       <td>{{this}}</td>
       {{/each}}
-      {{#if this.OrderDate}} <!-- OrderDate가 NULL이 아니라면 -->
-        <td></td> <!-- 빈 셀 -->
-      {{else}} <!-- OrderDate가 NULL이라면 -->
-        <form id="deleteForm" method="post" action={{../post}}>
+      {{#if this.OrderDate}}
+        <td></td>
+      {{else}}
+        <form id="deleteForm" method="post" action="/select/basket/buy">
           <td>
+          <input type="hidden" name="Book_ISBN" value="{{this.Book_ISBN}}">
+          <input type="hidden" name="BasketID" value="{{this.BasketID}}">
+          <div class="buttons">          
             <button type="submit">Buy</button>
+          </div>
           </td>
         </form>
       {{/if}}

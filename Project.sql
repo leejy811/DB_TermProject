@@ -18,11 +18,10 @@ USE `DB_Proj` ;
 -- Table `DB_Proj`.`Author`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `DB_Proj`.`Author` (
-  `ID` INT NOT NULL AUTO_INCREMENT,
-  `Name` VARCHAR(45) NOT NULL,
+  `Name` CHAR(15) NOT NULL,
   `Address` VARCHAR(45) NOT NULL,
   `URL` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`ID`))
+  PRIMARY KEY (`Name`))
 ENGINE = InnoDB;
 
 
@@ -32,15 +31,16 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `DB_Proj`.`Book` (
   `ISBN` INT NOT NULL,
   `Year` YEAR(4) NOT NULL,
-  `Title` VARCHAR(45) NOT NULL,
+  `Title` CHAR(20) NOT NULL,
   `Price` INT NOT NULL,
   `Category` VARCHAR(45) NOT NULL,
-  `Author_ID` INT NOT NULL,
+  `Author_Name` CHAR(15) NOT NULL,
   PRIMARY KEY (`ISBN`),
-  INDEX `fk_Book_Author_idx` (`Author_ID` ASC) VISIBLE,
-  CONSTRAINT `fk_Book_Author`
-    FOREIGN KEY (`Author_ID`)
-    REFERENCES `DB_Proj`.`Author` (`ID`)
+  INDEX `fk_Book_Author1_idx` (`Author_Name` ASC) VISIBLE,
+  UNIQUE INDEX `Title_UNIQUE` (`Title` ASC) VISIBLE,
+  CONSTRAINT `fk_Book_Author1`
+    FOREIGN KEY (`Author_Name`)
+    REFERENCES `DB_Proj`.`Author` (`Name`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -50,22 +50,14 @@ ENGINE = InnoDB;
 -- Table `DB_Proj`.`Award`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `DB_Proj`.`Award` (
-  `ID` INT NOT NULL AUTO_INCREMENT,
   `Name` VARCHAR(45) NOT NULL,
   `Year` YEAR(4) NOT NULL,
   `Book_ISBN` INT NOT NULL,
-  `Author_ID` INT NOT NULL,
+  PRIMARY KEY (`Name`, `Year`),
   INDEX `fk_Award_Book1_idx` (`Book_ISBN` ASC) VISIBLE,
-  INDEX `fk_Award_Author1_idx` (`Author_ID` ASC) VISIBLE,
-  PRIMARY KEY (`ID`),
   CONSTRAINT `fk_Award_Book1`
     FOREIGN KEY (`Book_ISBN`)
     REFERENCES `DB_Proj`.`Book` (`ISBN`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Award_Author1`
-    FOREIGN KEY (`Author_ID`)
-    REFERENCES `DB_Proj`.`Author` (`ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -78,7 +70,8 @@ CREATE TABLE IF NOT EXISTS `DB_Proj`.`Warehouse` (
   `Code` INT NOT NULL,
   `PhoneNum` VARCHAR(45) NOT NULL,
   `Address` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`Code`))
+  PRIMARY KEY (`Code`),
+  UNIQUE INDEX `Address_UNIQUE` (`Address` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -109,39 +102,15 @@ ENGINE = InnoDB;
 -- Table `DB_Proj`.`User`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `DB_Proj`.`User` (
-  `ID` INT NOT NULL AUTO_INCREMENT,
-  `Email` CHAR(45) NOT NULL,
-  `PhoneNum` VARCHAR(45) NULL,
+  `Email` CHAR(30) NOT NULL,
+  `PhoneNum` VARCHAR(45) NOT NULL,
   `Address` VARCHAR(45) NOT NULL,
   `Name` VARCHAR(45) NOT NULL,
   `Password` INT NOT NULL,
   `Type` CHAR(10) NOT NULL,
-  PRIMARY KEY (`ID`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `DB_Proj`.`Shopping_Basket`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `DB_Proj`.`Shopping_Basket` (
-  `Customer_ID` INT NOT NULL,
-  `BasketID` INT NOT NULL,
-  `Book_ISBN` INT NOT NULL,
-  `OrderDate` DATE NULL,
-  `Number` INT NOT NULL DEFAULT 1,
-  PRIMARY KEY (`Customer_ID`, `BasketID`),
-  INDEX `fk_Customer_has_Book_Book1_idx` (`Book_ISBN` ASC) VISIBLE,
-  INDEX `fk_Customer_has_Book_Customer1_idx` (`Customer_ID` ASC) VISIBLE,
-  CONSTRAINT `fk_Customer_has_Book_Customer1`
-    FOREIGN KEY (`Customer_ID`)
-    REFERENCES `DB_Proj`.`User` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Customer_has_Book_Book1`
-    FOREIGN KEY (`Book_ISBN`)
-    REFERENCES `DB_Proj`.`Book` (`ISBN`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  PRIMARY KEY (`Email`),
+  UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) VISIBLE,
+  UNIQUE INDEX `Password_UNIQUE` (`Password` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -149,20 +118,45 @@ ENGINE = InnoDB;
 -- Table `DB_Proj`.`Reservation`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `DB_Proj`.`Reservation` (
-  `Customer_ID` INT NOT NULL,
+  `RID` INT NOT NULL AUTO_INCREMENT,
   `Book_ISBN` INT NOT NULL,
-  `RID` INT NOT NULL,
-  `OrderDate` DATE NULL,
-  `PickupTime` TIME NULL,
-  PRIMARY KEY (`Customer_ID`, `Book_ISBN`),
+  `User_Email` CHAR(30) NOT NULL,
+  `OrderDate` DATE NOT NULL,
+  `PickupTime` TIME NOT NULL,
+  PRIMARY KEY (`RID`, `Book_ISBN`, `User_Email`),
   INDEX `fk_Customer_has_Book_Book2_idx` (`Book_ISBN` ASC) VISIBLE,
-  INDEX `fk_Customer_has_Book_Customer2_idx` (`Customer_ID` ASC) VISIBLE,
-  CONSTRAINT `fk_Customer_has_Book_Customer2`
-    FOREIGN KEY (`Customer_ID`)
-    REFERENCES `DB_Proj`.`User` (`ID`)
+  INDEX `fk_Reservation_User1_idx` (`User_Email` ASC) VISIBLE,
+  CONSTRAINT `fk_Customer_has_Book_Book2`
+    FOREIGN KEY (`Book_ISBN`)
+    REFERENCES `DB_Proj`.`Book` (`ISBN`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Customer_has_Book_Book2`
+  CONSTRAINT `fk_Reservation_User1`
+    FOREIGN KEY (`User_Email`)
+    REFERENCES `DB_Proj`.`User` (`Email`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `DB_Proj`.`Shopping_basket`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `DB_Proj`.`Shopping_basket` (
+  `BasketID` INT NOT NULL AUTO_INCREMENT,
+  `User_Email` CHAR(30) NOT NULL,
+  `Book_ISBN` INT NOT NULL,
+  `Number` INT NOT NULL DEFAULT 0,
+  `OrderDate` DATE NULL,
+  PRIMARY KEY (`BasketID`, `User_Email`, `Book_ISBN`),
+  INDEX `fk_User_has_Book_Book1_idx` (`Book_ISBN` ASC) VISIBLE,
+  INDEX `fk_User_has_Book_User1_idx` (`User_Email` ASC) VISIBLE,
+  CONSTRAINT `fk_User_has_Book_User1`
+    FOREIGN KEY (`User_Email`)
+    REFERENCES `DB_Proj`.`User` (`Email`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_User_has_Book_Book1`
     FOREIGN KEY (`Book_ISBN`)
     REFERENCES `DB_Proj`.`Book` (`ISBN`)
     ON DELETE NO ACTION

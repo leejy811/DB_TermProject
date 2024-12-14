@@ -11,7 +11,7 @@
   <thead>
     <tr>
       {{#each columns}}
-      <th>{{name}}</th>
+      <th>{{this}}</th>
       {{/each}}
     </tr>
   </thead>
@@ -26,14 +26,14 @@
     <tr>
       <form id="insertForm" method="post" action={{post}}>
         {{#each columns}}
-          {{#if isInsert}}
-            <td><input type="text" id="{{name}}" name="{{name}}" required></td>
-          {{else}}
-            <td></td>
-         {{/if}}
+        <td>
+          <input type="text" id="{{this}}" name="{{this}}" required placeholder="Enter {{this}}">
+        </td>
         {{/each}}
         <td>
-          <button type="submit">Insert</button>
+          <div class="buttons">          
+            <button type="submit">Insert</button>
+          </div>
         </td>
       </form>
     </tr>
