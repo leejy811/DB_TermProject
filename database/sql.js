@@ -113,8 +113,7 @@ GROUP BY
     b.Title, 
     b.Price, 
     b.Category, 
-    a.Name AS Author_Name, 
-    COALESCE(SUM(i.Number), 0) AS Number
+    a.Name AS Author_Name,     COALESCE(SUM(i.Number), 0) AS Number
 FROM 
     Award aw
 JOIN 
@@ -131,174 +130,255 @@ GROUP BY
         const [result] = await promisePool.query(sql);
         return result;
     },
+    setIsolationLevel: async (Name) => {
+        const sql = `set transaction isolation level REPEATABLE READ`;
+        await promisePool.query(sql);
+    },
+    setLog: async (Name) => {
+        let sql = `SET GLOBAL slow_query_log = 'ON'`;
+        await promisePool.query(sql);
+
+        sql = `SET GLOBAL long_query_time = 2`;
+        await promisePool.query(sql);
+
+        sql = `SET GLOBAL general_log = 'OFF'`;
+        await promisePool.query(sql);
+    },
 }
 
 export const insertSql = {
     insertAuthor: async (data) => {
-        const sql = `INSERT INTO Author (Name, Address, URL) VALUES 
-                    ('${data.Name}', '${data.Address}', '${data.URL}')`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `INSERT INTO Author (Name, Address, URL) VALUES (?, ?, ?)`,
+                values: [data.Name, data.Address, data.URL]
+            }
+        ];
+        return exception(queries);
     },
     insertBook: async (data) => {
-        const sql = `INSERT INTO Book (ISBN, Year, Title, Price, Category, Author_Name) VALUES 
-            (${data.ISBN}, ${data.Year}, '${data.Title}', ${data.Price}, '${data.Category}', '${data.AuthorName}')`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `INSERT INTO Book (ISBN, Year, Title, Price, Category, Author_Name) VALUES (?, ?, ?, ?, ?, ?)`,
+                values: [data.ISBN, data.Year, data.Title, data.Price, data.Category, data.AuthorName]
+            }
+        ];
+        return exception(queries);
     },
     insertAward: async (data) => {
-        const sql = `INSERT INTO Award (Name, Year, Book_ISBN) VALUES 
-                    ('${data.Name}', ${data.Year}, ${data.Book_ISBN})`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `INSERT INTO Award (Name, Year, Book_ISBN) VALUES (?, ?, ?)`,
+                values: [data.Name, data.Year, data.Book_ISBN]
+            }
+        ];
+        return exception(queries);
     },
     insertWarehouse: async (data) => {
-        const sql = `INSERT INTO Warehouse (Code, PhoneNum, Address) VALUES 
-                    (${data.Code}, '${data.PhoneNum}', '${data.Address}')`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `INSERT INTO Warehouse (Code, PhoneNum, Address) VALUES (?, ?, ?)`,
+                values: [data.Code, data.PhoneNum, data.Address]
+            }
+        ];
+        return exception(queries);
     },
     insertInventory: async (data) => {
-        const sql = `INSERT INTO Inventory (Warehouse_Code, Book_ISBN, Number) VALUES 
-                    (${data.Warehouse_Code}, ${data.Book_ISBN}, ${data.Number})`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `INSERT INTO Inventory (Warehouse_Code, Book_ISBN, Number) VALUES (?, ?, ?)`,
+                values: [data.Warehouse_Code, data.Book_ISBN, data.Number]
+            }
+        ];
+        return exception(queries);
     },
     insertContains: async (data) => {
-        const sql = `INSERT INTO Shopping_basket (BasketID, User_Email, Book_ISBN, Number, OrderDate) VALUES 
-                    (${data.BasketID}, '${data.User_Email}', ${data.Book_ISBN}, ${data.Number}, NULL)`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `INSERT INTO Shopping_basket (BasketID, User_Email, Book_ISBN, Number, OrderDate) VALUES (?, ?, ?, ?, ?)`,
+                values: [data.BasketID, data.User_Email, data.Book_ISBN, data.Number, null]
+            }
+        ];
+        return exception(queries);
     },
     insertBasket: async (data) => {
-        const sql = `INSERT INTO Shopping_basket (User_Email, Book_ISBN, Number, OrderDate) VALUES 
-                    ('${data.User_Email}', ${data.Book_ISBN}, ${data.Number}, NULL)`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `INSERT INTO Shopping_basket (User_Email, Book_ISBN, Number, OrderDate) VALUES (?, ?, ?, ?)`,
+                values: [data.User_Email, data.Book_ISBN, data.Number, null]
+            }
+        ];
+        return exception(queries);
     },
     insertReservation: async (data) => {
-        const sql = `INSERT INTO Reservation (Book_ISBN, User_Email, OrderDate, PickupTime) VALUES 
-                    (${data.Book_ISBN}, '${data.User_Email}', '${data.Date}', '${data.Time}')`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `INSERT INTO Reservation (Book_ISBN, User_Email, OrderDate, PickupTime) VALUES (?, ?, ?, ?)`,
+                values: [data.Book_ISBN, data.User_Email, data.Date, data.Time]
+            }
+        ];
+        return exception(queries);
     },
 };
 
 export const updateSql = {
     updateBook: async (data) => {
-        const sql = `UPDATE Book
-                        SET 
-                            Year = ${data.Year},
-                            Title = '${data.Title}',
-                            Price = ${data.Price},
-                            Category = '${data.Category}',
-                            Author_ID = ${data.Author_ID}
-                        WHERE 
-                            ISBN = ${data.ISBN};
-                        `;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `UPDATE Book SET Year = ?, Title = ?, Price = ?, Category = ?, Author_Name = ? WHERE ISBN = ?`,
+                values: [data.Year, data.Title, data.Price, data.Category, data.Author_Name, data.ISBN]
+            }
+        ];
+        return exception(queries);
     },
     updateAuthor: async (data) => {
-        const sql = `UPDATE Author
-                        SET 
-                            Name = '${data.Name}',
-                            Address = '${data.Address}',
-                            URL = '${data.URL}'
-                        WHERE 
-                            ID = ${data.ID};
-                        `;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `UPDATE Author SET Address = ?, URL = ? WHERE Name = ?`,
+                values: [data.Address, data.URL, data.Name]
+            }
+        ];
+        return exception(queries);
     },
     updateAward: async (data) => {
-        const sql = `UPDATE Award
-                        SET 
-                            Name = '${data.Name}',
-                            Year = ${data.Year},
-                            Book_ISBN = ${data.Book_ISBN}
-                        WHERE 
-                            ID = ${data.ID};
-                        `;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `UPDATE Award SET Year = ?, Book_ISBN = ? WHERE Name = ?`,
+                values: [data.Year, data.Book_ISBN, data.Name]
+            }
+        ];
+        return exception(queries);
     },
     updateWarehouse: async (data) => {
-        const sql = `UPDATE Warehouse
-                        SET 
-                            PhoneNum = '${data.PhoneNum}',
-                            Address = '${data.Address}'
-                        WHERE 
-                            Code = ${data.Code};
-                        `;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `UPDATE Warehouse SET PhoneNum = ?, Address = ? WHERE Code = ?`,
+                values: [data.PhoneNum, data.Address, data.Code]
+            }
+        ];
+        return exception(queries);
     },
     updateInventory: async (data) => {
-        const sql = `UPDATE Inventory
-                        SET 
-                            Book_ISBN = ${data.Book_ISBN},
-                            Number = ${data.Number}
-                        WHERE 
-                            Warehouse_Code = ${data.Warehouse_Code};
-                        `;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `UPDATE Inventory SET Book_ISBN = ?, Number = ? WHERE Warehouse_Code = ?`,
+                values: [data.Book_ISBN, data.Number, data.Warehouse_Code]
+            }
+        ];
+        return exception(queries);
     },
     updateContains: async (data) => {
-        const sql = `UPDATE Shopping_basket
-                        SET 
-                            Number = ${data.Number}
-                        WHERE 
-                            User_Email = '${data.User_Email}' AND Book_ISBN = ${data.Book_ISBN} AND BasketID = ${data.BasketID};
-                        `;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `UPDATE Shopping_basket SET Number = ? WHERE User_Email = ? AND Book_ISBN = ? AND BasketID = ?`,
+                values: [data.Number, data.User_Email, data.Book_ISBN, data.BasketID]
+            }
+        ];
+        return exception(queries);
     },
     updateReservation: async (data) => {
-        const sql = `UPDATE Reservation
-                        SET 
-                            OrderDate = '${data.Date}',
-                            PickupTime = '${data.Time}'
-                        WHERE 
-                            User_Email = '${data.user}' AND Book_ISBN = ${data.ISBN} AND RID = ${data.RID};
-                        `;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `UPDATE Reservation SET OrderDate = ?, PickupTime = ? WHERE User_Email = ? AND Book_ISBN = ? AND RID = ?`,
+                values: [data.Date, data.Time, data.user, data.ISBN, data.RID]
+            }
+        ];
+        return exception(queries);
     },
     updateBasket: async (data) => {
-        const sql = `UPDATE Shopping_basket
-                        SET 
-                            OrderDate = '${data.Date}'
-                        WHERE 
-                            User_Email = '${data.user}' AND Book_ISBN = ${data.Book_ISBN} AND BasketID = ${data.BasketID};
-                        `;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `UPDATE Shopping_basket SET OrderDate = ? WHERE User_Email = ? AND Book_ISBN = ? AND BasketID = ?`,
+                values: [data.Date, data.user, data.Book_ISBN, data.BasketID]
+            }
+        ];
+        return exception(queries);
     },
 };
 
 export const deleteSql = {
     deleteBook: async (data) => {
-        const sql = `DELETE FROM Book WHERE ISBN=${data.ISBN}`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `DELETE FROM Book WHERE ISBN = ?`,
+                values: [data.ISBN]
+            }
+        ];
+        return exception(queries);
     },
     deleteAuthor: async (data) => {
-        const sql = `DELETE FROM Author WHERE Name='${data.Name}'`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `DELETE FROM Author WHERE Name = ?`,
+                values: [data.Name]
+            }
+        ];
+        return exception(queries);
     },
     deleteAward: async (data) => {
-        const sql = `DELETE FROM Award WHERE Name='${data.Name}' AND Year=${data.Year}`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `DELETE FROM Award WHERE Name = ? AND Year = ?`,
+                values: [data.Name, data.Year]
+            }
+        ];
+        return exception(queries);
     },
     deleteWarehouse: async (data) => {
-        const sql = `DELETE FROM Warehouse WHERE Code=${data.Code}`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `DELETE FROM Warehouse WHERE Code = ?`,
+                values: [data.Code]
+            }
+        ];
+        return exception(queries);
     },
     deleteInventory: async (data) => {
-        const sql = `DELETE FROM Inventory WHERE Warehouse_Code=${data.Warehouse_Code} AND Book_ISBN=${data.Book_ISBN}`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `DELETE FROM Inventory WHERE Warehouse_Code = ? AND Book_ISBN = ?`,
+                values: [data.Warehouse_Code, data.Book_ISBN]
+            }
+        ];
+        return exception(queries);
     },
     deleteContains: async (data) => {
-        const sql = `DELETE FROM Shopping_basket WHERE BasketID=${data.BasketID} AND User_Email='${data.User_Email}' AND Book_ISBN=${data.Book_ISBN}`;
-        return exception(sql);
+        const queries = [
+            {
+                sql: `DELETE FROM Shopping_basket WHERE BasketID = ? AND User_Email = ? AND Book_ISBN = ?`,
+                values: [data.BasketID, data.User_Email, data.Book_ISBN]
+            }
+        ];
+        return exception(queries);
     },
     deleteReservation: async (data) => {
-        const sql = `DELETE FROM Reservation WHERE User_Email = '${data.user}' AND Book_ISBN = ${data.ISBN} AND RID = ${data.RID}`;
-        console.log(sql);
-        return exception(sql);
+        const queries = [
+            {
+                sql: `DELETE FROM Reservation WHERE User_Email = ? AND Book_ISBN = ? AND RID = ?`,
+                values: [data.user, data.ISBN, data.RID]
+            }
+        ];
+        return exception(queries);
     },
 };
 
-async function exception(sql) {
+async function exception(queries) {
+    const connection = await promisePool.getConnection();
     try {
-        await promisePool.query(sql);
+        await connection.beginTransaction();
+
+        for (const query of queries) {
+            const { sql, values } = query;
+            await connection.query(sql, values);
+        }
+
+        await connection.commit();
+        return 'success';
     } catch (error) {
+        await connection.rollback();
+        console.error('Transaction error:', error.sqlMessage);
         return error.sqlMessage;
+    } finally {
+        connection.release();
     }
-    return 'success';
 }

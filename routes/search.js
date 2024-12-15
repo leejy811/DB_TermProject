@@ -22,12 +22,8 @@ router.get('/', async (req, res) => {
 
 router.get('/book', async (req, res) => {
     if (req.cookies.user) {
-        const post = '/search/book';
-        const routes = getRoutes();
-        const userName = req.cookies.user.name;
-        const isLoggedIn = true;
-
-        res.render('search', { routes, userName, isLoggedIn, post });
+        const page = '/book';
+        getPage(req, res, page);
     }
     else
         res.redirect('/');
@@ -35,12 +31,8 @@ router.get('/book', async (req, res) => {
 
 router.get('/author', async (req, res) => {
     if (req.cookies.user) {
-        const post = '/search/author';
-        const routes = getRoutes();
-        const userName = req.cookies.user.name;
-        const isLoggedIn = true;
-
-        res.render('search', { routes, userName, isLoggedIn, post });
+        const page = '/author';
+        getPage(req, res, page);
     }
     else
         res.redirect('/');
@@ -48,12 +40,8 @@ router.get('/author', async (req, res) => {
 
 router.get('/award', async (req, res) => {
     if (req.cookies.user) {
-        const post = '/search/award';
-        const routes = getRoutes();
-        const userName = req.cookies.user.name;
-        const isLoggedIn = true;
-
-        res.render('search', { routes, userName, isLoggedIn, post });
+        const page = '/award';
+        getPage(req, res, page);
     }
     else
         res.redirect('/');
@@ -61,16 +49,10 @@ router.get('/award', async (req, res) => {
 
 router.post('/book', async (req, res) => {
     if (req.cookies.user) {
-        const name = req.body.name;
-        const rawDatas = await selectSql.getBookToBook(name);
+        const rawDatas = await selectSql.getBookToBook(req.body.name);
         const datas = getCanBuy(rawDatas);
-        const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author', 'Number'];
-        const post = '/search/book';
-        const routes = getRoutes();
-        const userName = req.cookies.user.name;
-        const isLoggedIn = true;
-
-        res.render('search', { routes, userName, isLoggedIn, datas, columns, post });
+        const page = '/book';
+        getPageWithData(req, res, datas, page);
     }
     else
         res.redirect('/');
@@ -78,16 +60,10 @@ router.post('/book', async (req, res) => {
 
 router.post('/author', async (req, res) => {
     if (req.cookies.user) {
-        const name = req.body.name;
-        const rawDatas = await selectSql.getBookToAuthor(name);
+        const rawDatas = await selectSql.getBookToAuthor(req.body.name);
         const datas = getCanBuy(rawDatas);
-        const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author', 'Number'];
-        const post = '/search/author';
-        const routes = getRoutes();
-        const userName = req.cookies.user.name;
-        const isLoggedIn = true;
-
-        res.render('search', { routes, userName, isLoggedIn, datas, columns, post });
+        const page = '/author';
+        getPageWithData(req, res, datas, page);
     }
     else
         res.redirect('/');
@@ -95,16 +71,10 @@ router.post('/author', async (req, res) => {
 
 router.post('/award', async (req, res) => {
     if (req.cookies.user) {
-        const name = req.body.name;
-        const rawDatas = await selectSql.getBookToAward(name);
+        const rawDatas = await selectSql.getBookToAward(req.body.name);
         const datas = getCanBuy(rawDatas);
-        const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author', 'Number'];
-        const post = '/search/award';
-        const routes = getRoutes();
-        const userName = req.cookies.user.name;
-        const isLoggedIn = true;
-
-        res.render('search', { routes, userName, isLoggedIn, datas, columns, post });
+        const page = '/award';
+        getPageWithData(req, res, datas, page);
     }
     else
         res.redirect('/');
@@ -151,6 +121,26 @@ function getCanBuy(rawDatas) {
     }
     return rawDatas;
 }
+
+function getPage(req, res, page) {
+    const post = '/search' + page;
+    const routes = getRoutes();
+    const userName = req.cookies.user.name;
+    const isLoggedIn = true;
+
+    res.render('search', { routes, userName, isLoggedIn, post });
+}
+
+function getPageWithData(req, res, datas, page) {
+    const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author', 'Number'];
+    const post = '/search' + page;
+    const routes = getRoutes();
+    const userName = req.cookies.user.name;
+    const isLoggedIn = true;
+
+    res.render('search', { routes, userName, isLoggedIn, datas, columns, post });
+}
+
 
 function exceptionResult(res, result, page) {
     if (result === 'success')

@@ -69,6 +69,8 @@ router.post('/', async (req, res) => {
             httpOnly: true
         })
 
+        selectSql.setIsolationLevel();
+        selectSql.setLog();
         if (userInfo.Type === 'Admin')
             res.redirect('/insert');
         else if (userInfo.Type === 'Customer')

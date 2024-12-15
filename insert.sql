@@ -1,64 +1,71 @@
--- Insert data into Author table
-INSERT INTO `DB_Proj`.`Author` (`Name`, `Address`, `URL`) VALUES
-('Author A', 'Address A', 'http://authora.com'),
-('Author B', 'Address B', 'http://authorb.com'),
-('Author C', 'Address C', 'http://authorc.com'),
-('Author D', 'Address D', 'http://authord.com'),
-('Author E', 'Address E', 'http://authore.com');
+-- Insert data into Author
+INSERT INTO `DB_Proj`.`Author` (`Name`, `Address`, `URL`)
+VALUES 
+('JohnDoe', '123 Maple St', 'www.johndoe.com'),
+('JaneSmith', '456 Oak St', 'www.janesmith.com'),
+('AliceBrown', '789 Pine St', 'www.alicebrown.com'),
+('BobWhite', '101 Birch St', 'www.bobwhite.com'),
+('CarolGreen', '202 Cedar St', 'www.carolgreen.com');
 
--- Insert data into Book table
-INSERT INTO `DB_Proj`.`Book` (`ISBN`, `Year`, `Title`, `Price`, `Category`, `Author_ID`) VALUES
-(1111, 2020, 'Book A', 500, 'Fiction', 1),
-(2222, 2021, 'Book B', 600, 'Non-Fiction', 2),
-(3333, 2019, 'Book C', 450, 'Science', 3),
-(4444, 2022, 'Book D', 700, 'Fantasy', 4),
-(5555, 2018, 'Book E', 550, 'Horror', 5);
+-- Insert data into Book
+INSERT INTO `DB_Proj`.`Book` (`ISBN`, `Year`, `Title`, `Price`, `Category`, `Author_Name`)
+VALUES
+(11111, 2020, 'Book One', 200, 'Fiction', 'JohnDoe'),
+(22222, 2021, 'Book Two', 150, 'Non-Fiction', 'JaneSmith'),
+(33333, 2019, 'Book Three', 300, 'Science', 'AliceBrown'),
+(44444, 2023, 'Book Four', 250, 'Fantasy', 'BobWhite'),
+(55555, 2022, 'Book Five', 180, 'Mystery', 'CarolGreen');
 
--- Insert data into Award table
-INSERT INTO `DB_Proj`.`Award` (`Book_ISBN`, `Name`, `Year`) VALUES
-(1111, 'Best Fiction', 2021),
-(2222, 'Readers Choice', 2022),
-(3333, 'Science Excellence', 2020),
-(4444, 'Fantasy Award', 2023),
-(5555, 'Horror Masterpiece', 2019);
+-- Insert data into Award
+INSERT INTO `DB_Proj`.`Award` (`Name`, `Year`, `Book_ISBN`)
+VALUES
+('Best Fiction', 2020, 11111),
+('Top Science Book', 2019, 33333),
+('Readers Choice', 2021, 22222),
+('Fantasy Award', 2023, 44444),
+('Mystery Prize', 2022, 55555);
 
--- Insert data into Warehouse table
-INSERT INTO `DB_Proj`.`Warehouse` (`Code`, `PhoneNum`, `Address`) VALUES
-(1, '123-456-7890', 'Warehouse A'),
-(2, '234-567-8901', 'Warehouse B'),
-(3, '345-678-9012', 'Warehouse C'),
-(4, '456-789-0123', 'Warehouse D'),
-(5, '567-890-1234', 'Warehouse E');
+-- Insert data into Warehouse
+INSERT INTO `DB_Proj`.`Warehouse` (`Code`, `PhoneNum`, `Address`)
+VALUES
+(1, '555-1234', '100 Elm St'),
+(2, '555-5678', '200 Ash St'),
+(3, '555-9101', '300 Spruce St'),
+(4, '555-1121', '400 Fir St'),
+(5, '555-3141', '500 Redwood St');
 
--- Insert data into Inventory table
-INSERT INTO `DB_Proj`.`Inventory` (`Warehouse_Code`, `Book_ISBN`, `Number`) VALUES
-(1, 1111, 10),
-(2, 2222, 15),
-(3, 3333, 20),
-(4, 4444, 25),
-(5, 5555, 30);
+-- Insert data into Inventory
+INSERT INTO `DB_Proj`.`Inventory` (`Warehouse_Code`, `Book_ISBN`, `Number`)
+VALUES
+(1, 11111, 10),
+(2, 22222, 15),
+(3, 33333, 20),
+(4, 44444, 5),
+(5, 55555, 8);
 
--- Insert data into User table
-INSERT INTO `DB_Proj`.`User` (`Email`, `PhoneNum`, `Address`, `Name`, `Password`, `Type`) VALUES
-('admin@example.com', '987-654-3210', 'Admin Address A', 'Admin', 1234, 'Admin'),
-('user1@example.com', '987-654-3210', 'User Address A', 'User A', 1234, 'Customer'),
-('user2@example.com', '876-543-2109', 'User Address B', 'User B', 2345, 'Customer'),
-('user3@example.com', '765-432-1098', 'User Address C', 'User C', 3456, 'Customer'),
-('user4@example.com', '654-321-0987', 'User Address D', 'User D', 4567, 'Customer'),
-('user5@example.com', '543-210-9876', 'User Address E', 'User E', 5678, 'Customer');
+-- Insert data into User
+INSERT INTO `DB_Proj`.`User` (`Email`, `PhoneNum`, `Address`, `Name`, `Password`, `Type`)
+VALUES
+('user1@example.com', '555-1111', '111 Main St', 'User One', 1234, 'Customer'),
+('user2@example.com', '555-2222', '222 Main St', 'User Two', 5678, 'Customer'),
+('user3@example.com', '555-3333', '333 Main St', 'User Three', 9101, 'Admin'),
+('user4@example.com', '555-4444', '444 Main St', 'User Four', 1121, 'Customer'),
+('user5@example.com', '555-5555', '555 Main St', 'User Five', 3141, 'Admin');
 
--- Insert data into Shopping_Basket table
-INSERT INTO `DB_Proj`.`Shopping_Basket` (`Customer_ID`, `BasketID`, `Book_ISBN`, `OrderDate`, `Number`) VALUES
-(1, 101, 1111, '2024-12-01', 2),
-(2, 102, 2222, '2024-12-02', 1),
-(3, 103, 3333, '2024-12-03', 3),
-(4, 104, 4444, '2024-12-04', 1),
-(5, 105, 5555, '2024-12-05', 4);
+-- Insert data into Reservation
+INSERT INTO `DB_Proj`.`Reservation` (`RID`, `Book_ISBN`, `User_Email`, `OrderDate`, `PickupTime`)
+VALUES
+(1, 11111, 'user1@example.com', '2024-12-16', '10:00:00'),
+(2, 22222, 'user2@example.com', '2024-12-17', '11:00:00'),
+(3, 33333, 'user3@example.com', '2024-12-18', '12:00:00'),
+(4, 44444, 'user4@example.com', '2024-12-19', '13:00:00'),
+(5, 55555, 'user5@example.com', '2024-12-20', '14:00:00');
 
--- Insert data into Reservation table
-INSERT INTO `DB_Proj`.`Reservation` (`Customer_ID`, `Book_ISBN`, `RID`, `OrderDate`, `PickupTime`, `Reservationcol`) VALUES
-(1, 1111, 201, '2024-12-06', '10:00:00', 'Reserved'),
-(2, 2222, 202, '2024-12-07', '11:00:00', 'Reserved'),
-(3, 3333, 203, '2024-12-08', '12:00:00', 'Reserved'),
-(4, 4444, 204, '2024-12-09', '13:00:00', 'Reserved'),
-(5, 5555, 205, '2024-12-10', '14:00:00', 'Reserved');
+-- Insert data into Shopping_basket
+INSERT INTO `DB_Proj`.`Shopping_basket` (`BasketID`, `User_Email`, `Book_ISBN`, `Number`, `OrderDate`)
+VALUES
+(1, 'user1@example.com', 11111, 2, '2024-12-16'),
+(2, 'user2@example.com', 22222, 1, '2024-12-17'),
+(3, 'user3@example.com', 33333, 3, NULL),
+(4, 'user4@example.com', 44444, 1, '2024-12-19'),
+(5, 'user5@example.com', 55555, 4, '2024-12-20');
