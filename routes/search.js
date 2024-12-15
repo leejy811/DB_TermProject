@@ -62,7 +62,8 @@ router.get('/award', async (req, res) => {
 router.post('/book', async (req, res) => {
     if (req.cookies.user) {
         const name = req.body.name;
-        const datas = await selectSql.getBookToBook(name);
+        const rawDatas = await selectSql.getBookToBook(name);
+        const datas = getCanBuy(rawDatas);
         const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author', 'Number'];
         const post = '/search/book';
         const routes = getRoutes();
@@ -78,7 +79,8 @@ router.post('/book', async (req, res) => {
 router.post('/author', async (req, res) => {
     if (req.cookies.user) {
         const name = req.body.name;
-        const datas = await selectSql.getBookToAuthor(name);
+        const rawDatas = await selectSql.getBookToAuthor(name);
+        const datas = getCanBuy(rawDatas);
         const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author', 'Number'];
         const post = '/search/author';
         const routes = getRoutes();
@@ -94,7 +96,8 @@ router.post('/author', async (req, res) => {
 router.post('/award', async (req, res) => {
     if (req.cookies.user) {
         const name = req.body.name;
-        const datas = await selectSql.getBookToAward(name);
+        const rawDatas = await selectSql.getBookToAward(name);
+        const datas = getCanBuy(rawDatas);
         const columns = ['ISBN', 'Year', 'Title', 'Price', 'Category', 'Author', 'Number'];
         const post = '/search/award';
         const routes = getRoutes();
@@ -109,9 +112,9 @@ router.post('/award', async (req, res) => {
 
 router.post('/basket', async (req, res) => {
     if (req.cookies.user) {
-        const data = { Book_ISBN: req.body.ISBN, Number: req.body.quantity, User_Email: req.cookies.user.id};
-        await insertSql.insertBasket(data);
-        res.redirect('/search/book');
+        const data = { Book_ISBN: req.body.ISBN, Number: req.body.quantity, User_Email: req.cookies.user.id };
+        const result = await insertSql.insertBasket(data);
+        exceptionResult(res, result, '/book');
     }
     else
         res.redirect('/');
@@ -122,9 +125,9 @@ router.post('/reservation', async (req, res) => {
         const Date = req.body.pickupDateTime.split('T')[0];
         const Time = req.body.pickupDateTime.split('T')[1];
 
-        const data = { Book_ISBN: req.body.ISBN, User_Email: req.cookies.user.id, Date: Date, Time: Time};
-        await insertSql.insertReservation(data);
-        res.redirect('/search/book');
+        const data = { Book_ISBN: req.body.ISBN, User_Email: req.cookies.user.id, Date: Date, Time: Time };
+        const result = await insertSql.insertReservation(data);
+        exceptionResult(res, result, '/book');
     }
     else
         res.redirect('/');
@@ -140,4 +143,21 @@ function getRoutes() {
     ];
 
     return routes;
+}
+
+function getCanBuy(rawDatas) {
+    for (let i = 0; i < rawDatas.length; i++) {
+        rawDatas[i].canBuy = rawDatas[i].Number <= 0
+    }
+    return rawDatas;
+}
+
+function exceptionResult(res, result, page) {
+    if (result === 'success')
+        res.redirect('/search' + page);
+    else
+        return res.send(`<script> 
+                alert("failed! Error: ${result}");
+                window.location.href = '/search${page}';
+                 </script>`);
 }

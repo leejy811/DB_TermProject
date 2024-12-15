@@ -68,17 +68,18 @@ export const selectSql = {
     b.Price, 
     b.Category, 
     a.Name AS Author_Name, 
-    SUM(i.Number) AS Total_Quantity
+    COALESCE(SUM(i.Number), 0) AS Number
 FROM 
     Book b
 JOIN 
     Author a ON b.Author_Name = a.Name
-JOIN 
+LEFT JOIN 
     Inventory i ON b.ISBN = i.Book_ISBN
 WHERE 
     b.Title = '${Title}'
 GROUP BY 
-    b.ISBN, b.Year, b.Title, b.Price, b.Category, a.Name`;
+    b.ISBN, b.Year, b.Title, b.Price, b.Category, a.Name;
+`;
         const [result] = await promisePool.query(sql);
         return result;
     },
@@ -90,17 +91,18 @@ GROUP BY
     b.Price, 
     b.Category, 
     a.Name AS Author_Name, 
-    SUM(i.Number) AS Total_Quantity
+    COALESCE(SUM(i.Number), 0) AS Number
 FROM 
     Book b
 JOIN 
     Author a ON b.Author_Name = a.Name
-JOIN 
+LEFT JOIN 
     Inventory i ON b.ISBN = i.Book_ISBN
 WHERE 
     a.Name = '${Name}'
 GROUP BY 
-    b.ISBN, b.Year, b.Title, b.Price, b.Category, a.Name`;
+    b.ISBN, b.Year, b.Title, b.Price, b.Category, a.Name;
+`;
         const [result] = await promisePool.query(sql);
         return result;
     },
@@ -112,19 +114,20 @@ GROUP BY
     b.Price, 
     b.Category, 
     a.Name AS Author_Name, 
-    SUM(i.Number) AS Total_Quantity
+    COALESCE(SUM(i.Number), 0) AS Number
 FROM 
-    Book b
+    Award aw
+JOIN 
+    Book b ON aw.Book_ISBN = b.ISBN
 JOIN 
     Author a ON b.Author_Name = a.Name
-JOIN 
-    Award aw ON b.ISBN = aw.Book_ISBN
-JOIN 
+LEFT JOIN 
     Inventory i ON b.ISBN = i.Book_ISBN
 WHERE 
     aw.Name = '${Name}'
 GROUP BY 
-    b.ISBN, b.Year, b.Title, b.Price, b.Category, a.Name`;
+    b.ISBN, b.Year, b.Title, b.Price, b.Category, a.Name;
+`;
         const [result] = await promisePool.query(sql);
         return result;
     },
@@ -164,13 +167,11 @@ export const insertSql = {
     insertBasket: async (data) => {
         const sql = `INSERT INTO Shopping_basket (User_Email, Book_ISBN, Number, OrderDate) VALUES 
                     ('${data.User_Email}', ${data.Book_ISBN}, ${data.Number}, NULL)`;
-                    console.log(sql);
         return exception(sql);
     },
     insertReservation: async (data) => {
         const sql = `INSERT INTO Reservation (Book_ISBN, User_Email, OrderDate, PickupTime) VALUES 
                     (${data.Book_ISBN}, '${data.User_Email}', '${data.Date}', '${data.Time}')`;
-                    console.log(sql);
         return exception(sql);
     },
 };

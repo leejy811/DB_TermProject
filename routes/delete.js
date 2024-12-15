@@ -157,7 +157,7 @@ function getPage(req, res, rawDatas, columns, page) {
     const isLoggedIn = true;
 
     const updatedUser = { ...req.cookies.user, curPage: page };
-    res.cookie('user', updatedUser, { httpOnly: true, maxAge: 3600000 });
+    res.cookie('user', updatedUser, { httpOnly: true, maxAge: 300000 });
     res.render('delete', { routes, userName, isLoggedIn, datas, columns, post });
 }
 

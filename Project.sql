@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `DB_Proj`.`Shopping_basket` (
   `BasketID` INT NOT NULL AUTO_INCREMENT,
   `User_Email` CHAR(30) NOT NULL,
   `Book_ISBN` INT NOT NULL,
-  `Number` INT NOT NULL DEFAULT 0,
+  `Number` INT UNSIGNED NOT NULL DEFAULT 0,
   `OrderDate` DATE NULL,
   PRIMARY KEY (`BasketID`, `User_Email`, `Book_ISBN`),
   INDEX `fk_User_has_Book_Book1_idx` (`Book_ISBN` ASC) VISIBLE,
@@ -163,6 +163,48 @@ CREATE TABLE IF NOT EXISTS `DB_Proj`.`Shopping_basket` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+USE `DB_Proj`;
+
+DELIMITER $$
+USE `DB_Proj`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `DB_Proj`.`Reservation_BEFORE_INSERT` BEFORE INSERT ON `Reservation` FOR EACH ROW
+BEGIN
+    DECLARE reservation_exists INT;
+
+    SELECT COUNT(*)
+    INTO reservation_exists
+    FROM Reservation
+    WHERE 
+        OrderDate = NEW.OrderDate -- 날짜가 동일해야 함
+        AND ABS(TIMESTAMPDIFF(MINUTE, PickupTime, NEW.PickupTime)) < 10;
+
+    IF reservation_exists > 0 THEN
+		SIGNAL SQLSTATE '23001'
+		SET MESSAGE_TEXT = 'PickupTime within 10 minutes already exists for the same date.';
+    END IF;
+END$$
+
+USE `DB_Proj`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `DB_Proj`.`Reservation_BEFORE_UPDATE` BEFORE UPDATE ON `Reservation` FOR EACH ROW
+BEGIN
+    DECLARE reservation_exists INT;
+
+    SELECT COUNT(*)
+    INTO reservation_exists
+    FROM Reservation
+    WHERE 
+        OrderDate = NEW.OrderDate -- 날짜가 동일해야 함
+        AND ABS(TIMESTAMPDIFF(MINUTE, PickupTime, NEW.PickupTime)) < 10
+        AND RID != NEW.RID; -- 현재 업데이트 중인 레코드는 제외
+
+    IF reservation_exists > 0 THEN
+		SIGNAL SQLSTATE '23001'
+		SET MESSAGE_TEXT = 'PickupTime within 10 minutes already exists for the same date.';
+    END IF;
+END$$
+
+
+DELIMITER ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

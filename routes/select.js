@@ -57,9 +57,8 @@ router.post('/reservation/update', async (req, res) => {
         const Time = req.body.pickupDateTime.split('T')[1];
         const data = { RID: req.body.RID, ISBN: req.body.ISBN, Date: Date, Time: Time, user: req.cookies.user.id };
 
-        await updateSql.updateReservation(data);
-
-        res.redirect('/select/reservation');
+        const result = await updateSql.updateReservation(data);
+        exceptionResult(res, result, '/reservation');
     }
     else
         res.redirect('/');
@@ -103,4 +102,14 @@ function getRoutes() {
     ];
 
     return routes;
+}
+
+function exceptionResult(res, result, page) {
+    if (result === 'success')
+        res.redirect('/select' + page);
+    else
+        return res.send(`<script> 
+                alert("update failed! Error: ${result}");
+                window.location.href = '/select${page}';
+                 </script>`);
 }

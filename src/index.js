@@ -6,7 +6,6 @@ import liveReload from 'livereload';
 import connectLiveReload from 'connect-livereload';
 
 import loginRouter from '../routes/login';
-import logoutRouter from '../routes/logout';
 import insertRouter from '../routes/insert';
 import updateRouter from '../routes/update';
 import deleteRouter from '../routes/delete';
@@ -35,7 +34,6 @@ app.set('view engine', 'hbs');
 app.use(logger('dev'));
 
 app.use('/', loginRouter);
-app.use('/logout', logoutRouter);
 app.use('/insert', insertRouter);
 app.use('/update', updateRouter);
 app.use('/delete', deleteRouter);

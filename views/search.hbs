@@ -24,9 +24,16 @@
   <tbody>
     {{#each datas}}
     <tr>
-      {{#each this}}
-      <td>{{this}}</td>
-      {{/each}}
+      <td>{{ISBN}}</td>
+      <td>{{Year}}</td>
+      <td>{{Title}}</td>
+      <td>{{Price}}</td>
+      <td>{{Category}}</td>
+      <td>{{Author_Name}}</td>
+      <td>{{Number}}</td>
+      {{#if canBuy}}
+      <td></td>
+      {{else}}
       <td>
         <form method="post" action="/search/basket" class="form-inline">
           <input type="hidden" name="ISBN" value="{{ISBN}}">
@@ -34,6 +41,7 @@
         </form>
         <button class="action-button reserve-button" onclick="openReservePopup('{{ISBN}}')">Reserve</button>
       </td>
+      {{/if}}
     </tr>
     {{/each}}
   </tbody>

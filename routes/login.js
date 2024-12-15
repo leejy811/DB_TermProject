@@ -4,6 +4,9 @@ import expressSession from 'express-session';
 import { selectSql } from "../database/sql";
 const router = express.Router();
 
+let adminLoggedIn = false;
+let adminLogoutTimer = null;
+
 router.use(cookieParser());
 router.use(expressSession({
     secret: 'dilab',
@@ -25,6 +28,14 @@ router.get('/', (req, res) => {
         res.render('login');
 });
 
+router.get('/logout', (req, res) => {
+    if (req.cookies.user?.type === 'Admin') {
+        setAdminLoggedIn(false);
+    }
+    res.clearCookie('user');
+    res.redirect('/');
+});
+
 router.post('/', async (req, res) => {
     const vars = req.body;
     const users = await selectSql.getUser();
@@ -37,13 +48,24 @@ router.post('/', async (req, res) => {
     });
 
     if (userInfo.checkLogin) {
+        if (userInfo.Type === 'Admin') {
+            if (adminLoggedIn) {
+                return res.send(`<script>
+                                    alert('Another Admin is already modifying data. Please try again later.');
+                                    location.href='/';
+                                </script>`);
+            } else {
+                setAdminLoggedIn(true, 300000);
+            }
+        }
+
         res.cookie('user', {
             name: userInfo.Name, // 사용자 이름
             type: userInfo.Type, // 사용자 유형
             id: userInfo.id,     // 사용자 ID
             curPage: ''
         }, {
-            expires: new Date(Date.now() + 3600000), // ms 단위 (3600000: 1시간 유효)
+            expires: new Date(Date.now() + 300000),
             httpOnly: true
         })
 
@@ -61,3 +83,19 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
+
+function setAdminLoggedIn(value, timeout = null) {
+    adminLoggedIn = value;
+
+    if (adminLogoutTimer) {
+        clearTimeout(adminLogoutTimer);
+        adminLogoutTimer = null;
+    }
+
+    if (value && timeout) {
+        adminLogoutTimer = setTimeout(() => {
+            adminLoggedIn = false;
+            adminLogoutTimer = null;
+        }, timeout);
+    }
+};
